@@ -4,10 +4,12 @@ namespace App\Filament\Resources\Products\Schemas;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class ProductForm
 {
@@ -27,8 +29,15 @@ class ProductForm
                     ->required()
                     ->numeric()
                     ->default(0),
-                FileUpload::make('image')
-                    ->image(),
+                // FileUpload::make('image')
+                //     ->image(),
+                SpatieMediaLibraryFileUpload::make('product_images')
+                    ->collection('products')
+                    ->multiple()
+                    ->image()
+                    ->imageEditor()
+                    ->reorderable()
+                    ->downloadable(),
                 Toggle::make('status')
                     ->required(),
                 // TextInput::make('category_id')
