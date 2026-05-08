@@ -16,8 +16,8 @@ Route::view('profile', 'profile')
 
 require __DIR__.'/auth.php';
 
-Route::get('/admin/products', Products::class);
-Route::get(
-    '/admin/categories',
-    Categories::class
-);
+// Route::get('/admin/products', Products::class);
+// Route::get(
+//     '/admin/categories',
+//     Categories::class
+// );
