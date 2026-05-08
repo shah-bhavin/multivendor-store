@@ -58,4 +58,19 @@ class ProductResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (auth()->user()->hasRole('vendor')) {
+
+            $query->where(
+                'user_id',
+                auth()->id()
+            );
+        }
+
+        return $query;
+    }
 }

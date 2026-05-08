@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Products\Schemas;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -40,8 +41,8 @@ class ProductForm
                     ->downloadable(),
                 Toggle::make('status')
                     ->required(),
-                // TextInput::make('category_id')
-                //     ->numeric(),
+                Hidden::make('user_id')
+                    ->default(auth()->id()),
                 Select::make('category_id')
                     ->relationship('category', 'name') // 'category' is the relation name in your Model
                     ->searchable()

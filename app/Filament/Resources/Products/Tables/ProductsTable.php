@@ -20,6 +20,14 @@ class ProductsTable
     {
         return $table
             ->columns([
+                TextColumn::make('category.name') // 'category' is the method name in your Product model
+                    ->label('Category')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('user.name')
+                    ->label('Vendor')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('price')
@@ -38,14 +46,7 @@ class ProductsTable
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                // TextColumn::make('category_id')
-                //     ->numeric()
-                //     ->sortable(),
-                TextColumn::make('category.name') // 'category' is the method name in your Product model
-                    ->label('Category')
-                    ->searchable()
-                    ->sortable(),
+                    ->toggleable(isToggledHiddenByDefault: true),                
             ])
             ->filters([
                 TrashedFilter::make(),
