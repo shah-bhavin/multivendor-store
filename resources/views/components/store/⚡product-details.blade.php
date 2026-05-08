@@ -4,30 +4,55 @@ namespace App\Livewire\Store;
 use Livewire\Component;
 use App\Models\Product;
 use Livewire\Attributes\Layout;
-
+use Livewire\Attributes\Computed; 
 
 new class extends Component
 {
-    // public Product $product;
-
-    // public function mount(Product $product)
-    // {
-    //     $this->product = $product;
-    // }
-
-    // public function render()
-    // {
-    //     return view(
-    //         'livewire.store.product-details'
-    //     )->layout('layouts.store');
-    // }
-
     #[Layout('layouts.store')]
-    public function with(): array
+    public Product $product;
+
+    public function mount(Product $product)
     {
-        return [
-            'product' => Product::with('category')->first(),
-        ];
+        $this->product = $product;
+    }
+
+    public function addToCart(){
+        $product = Product::first(); 
+
+        $cart = session()->get('cart', []);
+
+        $productId = $this->product->id;
+
+        if (isset($cart[$productId])) {
+
+            $cart[$productId]['quantity']++;
+
+        } else {
+
+            $cart[$productId] = [
+
+                'id' => $this->product->id,
+
+                'name' => $this->product->name,
+
+                'price' => $this->product->price,
+
+                'image' =>
+                    $this->product
+                        ->getFirstMediaUrl('products'),
+
+                'quantity' => 1,
+            ];
+        }
+
+        session([
+            'cart' => $cart
+        ]);
+
+        session()->flash(
+            'success',
+            'Product Added To Cart'
+        );
     }
 };
 ?>
@@ -81,7 +106,18 @@ new class extends Component
 
         </p>
 
+        @if(session()->has('success'))
+
+            <div class="bg-green-500 text-white p-3 mb-5">
+
+                {{ session('success') }}
+
+            </div>
+
+        @endif
+
         <button
+            wire:click="addToCart"
             class="bg-blue-500 text-white px-6 py-3">
 
             Add To Cart

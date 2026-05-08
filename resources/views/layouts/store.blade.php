@@ -44,6 +44,12 @@
                     Products
 
                 </a>
+                <a href="/cart"
+                    class="hover:text-blue-500">
+
+                        Cart
+
+                    </a>
 
             </nav>
 
