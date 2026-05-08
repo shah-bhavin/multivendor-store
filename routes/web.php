@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Admin\Products;
 
 Route::view('/', 'welcome');
 
@@ -13,3 +14,5 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 require __DIR__.'/auth.php';
+
+Route::get('/admin/products', Products::class);
