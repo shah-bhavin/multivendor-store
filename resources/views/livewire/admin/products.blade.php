@@ -14,8 +14,54 @@
 
     @endif
 
-    <form wire:submit="save" class="mb-10">
+    {{-- Product Form --}}
 
+    <form
+        wire:submit="{{ $editMode ? 'update' : 'save' }}"
+        class="mb-10 border p-5"
+    >
+
+        <h2 class="text-2xl font-bold mb-5">
+
+            {{ $editMode ? 'Edit Product' : 'Create Product' }}
+
+        </h2>
+        <div class="mb-4">
+
+    <label>Category</label>
+
+    <select
+        wire:model="category_id"
+        class="w-full border p-2"
+    >
+
+        <option value="">
+            Select Category
+        </option>
+
+        @foreach($categories as $category)
+
+            <option value="{{ $category->id }}">
+
+                {{ $category->name }}
+
+            </option>
+
+        @endforeach
+
+    </select>
+
+    @error('category_id')
+
+        <div class="text-red-500">
+
+            {{ $message }}
+
+        </div>
+
+    @enderror
+
+</div>
         <div class="mb-4">
 
             <label>Name</label>
@@ -29,7 +75,9 @@
             @error('name')
 
                 <div class="text-red-500">
+
                     {{ $message }}
+
                 </div>
 
             @enderror
@@ -101,16 +149,39 @@
             type="submit"
             class="bg-blue-500 text-white px-5 py-2"
         >
-            Save Product
+
+            {{ $editMode ? 'Update Product' : 'Save Product' }}
+
         </button>
+
+        @if($editMode)
+
+            <button
+                type="button"
+                wire:click="resetForm"
+                class="bg-gray-500 text-white px-5 py-2 ml-2"
+            >
+                Cancel
+            </button>
+
+        @endif
 
     </form>
 
-    <hr class="my-5">
+    {{-- Search --}}
 
-    <h2 class="text-2xl font-bold mb-5">
-        Product List
-    </h2>
+    <div class="mb-5">
+
+        <input
+            type="text"
+            wire:model.live="search"
+            placeholder="Search Product..."
+            class="w-full border p-3"
+        >
+
+    </div>
+
+    {{-- Product Table --}}
 
     <table class="w-full border">
 
@@ -120,6 +191,8 @@
 
                 <th class="border p-2">ID</th>
 
+                <th class="border p-2">Category</th>
+
                 <th class="border p-2">Image</th>
 
                 <th class="border p-2">Name</th>
@@ -127,6 +200,8 @@
                 <th class="border p-2">Price</th>
 
                 <th class="border p-2">Stock</th>
+
+                <th class="border p-2">Actions</th>
 
             </tr>
 
@@ -141,6 +216,12 @@
                     <td class="border p-2">
 
                         {{ $product->id }}
+
+                    </td>
+
+                    <td class="border p-2">
+
+                        {{ $product->category?->name }}
 
                     </td>
 
@@ -175,13 +256,31 @@
 
                     </td>
 
+                    <td class="border p-2">
+
+                        <button
+                            wire:click="edit({{ $product->id }})"
+                            class="bg-yellow-500 text-white px-3 py-1"
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            wire:click="delete({{ $product->id }})"
+                            class="bg-red-500 text-white px-3 py-1 ml-2"
+                        >
+                            Delete
+                        </button>
+
+                    </td>
+
                 </tr>
 
             @empty
 
                 <tr>
 
-                    <td colspan="5" class="p-5 text-center">
+                    <td colspan="6" class="text-center p-5">
 
                         No Products Found
 
@@ -194,5 +293,13 @@
         </tbody>
 
     </table>
+
+    {{-- Pagination --}}
+
+    <div class="mt-5">
+
+        {{ $products->links() }}
+
+    </div>
 
 </div>
