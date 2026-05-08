@@ -34,6 +34,7 @@ class ProductForm
                 //     ->image(),
                 SpatieMediaLibraryFileUpload::make('product_images')
                     ->collection('products')
+                    ->disk('public')
                     ->multiple()
                     ->image()
                     ->imageEditor()
