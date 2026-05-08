@@ -1,6 +1,7 @@
 <?php
 namespace App\Livewire\Store;
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 
 new class extends Component
 {
