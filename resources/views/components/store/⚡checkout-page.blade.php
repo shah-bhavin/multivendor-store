@@ -4,7 +4,9 @@ namespace App\Livewire\Store;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\Order;
+use App\Models\User;
 use App\Models\OrderItem;
+use App\Notifications\OrderPlacedNotification;
 
 use Razorpay\Api\Api;
 
@@ -18,6 +20,8 @@ new class extends Component
     public $customer_phone;
 
     public $customer_address;
+
+    public $order;
 
     public $cart = [];
 
@@ -74,6 +78,8 @@ new class extends Component
                 'pending',
         ]);
 
+
+
         foreach ($this->cart as $item) {
 
             OrderItem::create([
@@ -90,6 +96,20 @@ new class extends Component
                 'price' =>
                     $item['price'],
             ]);
+
+            // $product = \App\Models\Product::find(
+            //     $item['id']
+            // );
+
+            // if ($product && $product->user) {
+
+            //     $product->user->notify(
+
+            //         new OrderPlacedNotification(
+            //             $order
+            //         )
+            //     );
+            // }
         }
 
         $api = new Api(
@@ -109,6 +129,19 @@ new class extends Component
                 'INR',
         ]);
 
+
+        // $admin = User::role('admin')
+        //     ->first();
+
+        // if ($admin) {
+
+        //     $admin->notify(
+
+        //         new OrderPlacedNotification(
+        //             $order
+        //         )
+        //     );
+        // }
         $order->update([
 
             'payment_id' =>
@@ -124,6 +157,8 @@ new class extends Component
             'payment.page',
             $order->id
         );
+
+        
     }
 };
 ?>
