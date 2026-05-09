@@ -5,6 +5,9 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\Order;
 use App\Models\OrderItem;
+
+use Razorpay\Api\Api;
+
 new class extends Component
 {
     #[Layout('layouts.store')]
@@ -66,6 +69,9 @@ new class extends Component
 
             'status' =>
                 'pending',
+
+            'payment_status' =>
+                'pending',
         ]);
 
         foreach ($this->cart as $item) {
@@ -86,13 +92,38 @@ new class extends Component
             ]);
         }
 
-        session()->forget('cart');
+        $api = new Api(
+            env('RAZORPAY_KEY'),
+            env('RAZORPAY_SECRET')
+        );
 
-        return redirect('/')
-            ->with(
-                'success',
-                'Order Placed Successfully'
-            );
+        $razorpayOrder = $api->order->create([
+
+            'receipt' =>
+                'order_' . $order->id,
+
+            'amount' =>
+                $total * 100,
+
+            'currency' =>
+                'INR',
+        ]);
+
+        $order->update([
+
+            'payment_id' =>
+                $razorpayOrder['id'],
+        ]);
+
+        session([
+            'razorpay_order_id' =>
+                $razorpayOrder['id']
+        ]);
+
+        return redirect()->route(
+            'payment.page',
+            $order->id
+        );
     }
 };
 ?>

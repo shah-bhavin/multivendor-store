@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Livewire\Admin\Products;
 use App\Livewire\Admin\Categories;
+use App\Livewire\Admin\Products;
+use App\Models\Order;
+use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 
@@ -21,3 +22,32 @@ Route::livewire('/products','store.product-list');
 Route::livewire('/products/{product}','store.product-details');
 Route::livewire('/cart', 'store.cart-page');
 Route::livewire('/checkout', 'store.checkout-page');
+
+
+Route::get(
+    '/payment-success/{order}',
+    function (Order $order) {
+
+        $order->update([
+
+            'payment_status' =>
+                'paid',
+
+            'status' =>
+                'processing',
+        ]);
+
+        session()->forget('cart');
+
+        return redirect('/')
+            ->with(
+                'success',
+                'Payment Successful'
+            );
+    }
+);
+
+Route::livewire(
+    '/payment/{order}',
+    'store.payment-page'
+)->name('payment.page');

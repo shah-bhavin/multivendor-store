@@ -9,6 +9,7 @@
           content="width=device-width, initial-scale=1.0">
 
     <title>Multi Vendor Store</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -62,8 +63,11 @@
     <main class="container mx-auto px-5 py-10">
 
         {{ $slot }}
+         @stack('scripts')
 
     </main>
+
+
 
 </body>
 

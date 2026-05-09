@@ -14,6 +14,9 @@ class Order extends Model
         'customer_address',
         'total_amount',
         'status',
+
+        'payment_id',
+        'payment_status',
     ];
 
     public function items()
