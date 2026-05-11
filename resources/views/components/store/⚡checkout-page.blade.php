@@ -6,6 +6,7 @@ use Livewire\Attributes\Layout;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\OrderItem;
+use App\Models\Coupon;
 use App\Notifications\OrderPlacedNotification;
 
 use Razorpay\Api\Api;
@@ -25,6 +26,8 @@ new class extends Component
     public $couponCode = '';
 
     public $discount = 0;
+
+    public $appliedCoupon = null;
 
     public function mount()
     {
@@ -57,8 +60,155 @@ new class extends Component
 
     public function getFinalTotalProperty()
     {
-        return $this->subtotal
-            - $this->discount;
+        return max(
+
+            0,
+
+            $this->subtotal
+            - $this->discount
+        );
+    }
+
+    public function applyCoupon(){
+    
+        $coupon = Coupon::where(
+
+            'code',
+
+            strtoupper($this->couponCode)
+
+        )->first();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Coupon Exists?
+        |--------------------------------------------------------------------------
+        */
+
+        if (! $coupon) {
+
+            session()->flash(
+
+                'error',
+
+                'Invalid coupon code.'
+            );
+
+            return;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Active Coupon?
+        |--------------------------------------------------------------------------
+        */
+
+        if (! $coupon->is_active) {
+
+            session()->flash(
+
+                'error',
+
+                'Coupon is inactive.'
+            );
+
+            return;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Expiry Check
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+
+            $coupon->expiry_date
+
+            &&
+
+            now()->gt($coupon->expiry_date)
+
+        ) {
+
+            session()->flash(
+
+                'error',
+
+                'Coupon has expired.'
+            );
+
+            return;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Usage Limit
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+
+            $coupon->usage_limit
+
+            &&
+
+            $coupon->used_count >=
+            $coupon->usage_limit
+
+        ) {
+
+            session()->flash(
+
+                'error',
+
+                'Coupon usage limit reached.'
+            );
+
+            return;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | APPLY DISCOUNT
+        |--------------------------------------------------------------------------
+        */
+
+        if ($coupon->type === 'fixed') {
+
+            $this->discount =
+                $coupon->value;
+
+        } else {
+
+            $this->discount =
+                ($this->subtotal
+                * $coupon->value) / 100;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Prevent Negative Total
+        |--------------------------------------------------------------------------
+        */
+
+        if ($this->discount > $this->subtotal) {
+
+            $this->discount =
+                $this->subtotal;
+        }
+
+        $this->appliedCoupon = $coupon;
+        session([
+            'coupon_id' =>
+                $coupon->id
+        ]);
+        session()->flash(
+
+            'success',
+
+            'Coupon applied successfully.'
+        );
     }
 
     public function placeOrder()
@@ -342,6 +492,11 @@ new class extends Component
                 <div class="flex justify-between mb-2">
 
                     <span>Discount</span>
+                    @if($appliedCoupon)
+
+                        ({{ $appliedCoupon->code }})
+
+                    @endif
 
                     <span>
 
@@ -350,7 +505,62 @@ new class extends Component
                     </span>
 
                 </div>
+                {{-- Coupon Section --}}
 
+                <div class="mt-5">
+
+                    <h3 class="text-xl font-bold mb-3">
+
+                        Apply Coupon
+
+                    </h3>
+
+                    <div class="flex gap-2">
+
+                        <input
+                            type="text"
+                            wire:model="couponCode"
+                            placeholder="Enter coupon code"
+                            class="border p-3 rounded w-full"
+                        >
+
+                        <button
+                            wire:click="applyCoupon"
+                            class="bg-blue-500 text-white px-5 rounded">
+
+                            Apply
+
+                        </button>
+
+                    </div>
+
+                    {{-- Success Message --}}
+
+                    @if(session()->has('success'))
+
+                        <div
+                            class="bg-green-100 text-green-700 p-3 rounded mt-3">
+
+                            {{ session('success') }}
+
+                        </div>
+
+                    @endif
+
+                    {{-- Error Message --}}
+
+                    @if(session()->has('error'))
+
+                        <div
+                            class="bg-red-100 text-red-700 p-3 rounded mt-3">
+
+                            {{ session('error') }}
+
+                        </div>
+
+                    @endif
+
+                </div>
                 <div
                     class="flex justify-between text-2xl font-bold">
 

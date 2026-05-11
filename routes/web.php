@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Livewire\Admin\Categories;
 use App\Livewire\Admin\Products;
+use App\Models\Coupon;
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,20 @@ Route::get(
             'status' =>
                 'processing',
         ]);
+        
+        if (session()->has('coupon_id')) {
+
+            $coupon = Coupon::find(
+                session('coupon_id')
+            );
+
+            if ($coupon) {
+
+                $coupon->increment(
+                    'used_count'
+                );
+            }
+        }
 
         session()->forget('cart');
 
@@ -53,6 +68,8 @@ Route::get(
             );
     }
 );
+
+
 
 Route::livewire(
     '/payment/{order}',
