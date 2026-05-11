@@ -29,6 +29,8 @@ new class extends Component
 
     public $appliedCoupon = null;
 
+    public $shipping_name, $shipping_phone, $shipping_address, $shipping_city, $shipping_state, $shipping_country = 'India', $shipping_pincode, $shipping_method = 'Standard';
+
     public function mount()
     {
         if (! auth()->check()) {
@@ -66,6 +68,7 @@ new class extends Component
 
             $this->subtotal
             - $this->discount
+                + $this->getShippingCharge()
         );
     }
 
@@ -220,6 +223,30 @@ new class extends Component
 
             'customer_address' =>
                 'required',
+
+            'shipping_name' =>
+                'required|string|max:255',
+
+            'shipping_phone' =>
+                'required|string|max:20',
+
+            'shipping_address' =>
+                'required|string',
+
+            'shipping_city' =>
+                'required|string|max:255',
+
+            'shipping_state' =>
+                'required|string|max:255',
+
+            'shipping_country' =>
+                'required|string|max:255',
+
+            'shipping_pincode' =>
+                'required|string|max:20',
+
+            'shipping_method' =>
+                'required|string',
         ]);
 
         auth()->user()->update([
@@ -264,8 +291,42 @@ new class extends Component
             'payment_status' =>
                 'pending',
 
-            'user_id' =>
-                auth()->id(),
+            /*
+            |--------------------------------------------------------------------------
+            | Shipping
+            |--------------------------------------------------------------------------
+            */
+
+            'shipping_name' =>
+                $this->shipping_name,
+
+            'shipping_phone' =>
+                $this->shipping_phone,
+
+            'shipping_address' =>
+                $this->shipping_address,
+
+            'shipping_city' =>
+                $this->shipping_city,
+
+            'shipping_state' =>
+                $this->shipping_state,
+
+            'shipping_country' =>
+                $this->shipping_country,
+
+            'shipping_pincode' =>
+                $this->shipping_pincode,
+
+            'shipping_method' =>
+                $this->shipping_method,
+
+            'shipping_charge' =>
+                $this->getShippingCharge(),
+
+            'delivery_status' =>
+                'Pending',
+
         ]);
 
 
@@ -358,9 +419,21 @@ new class extends Component
         return redirect()->route(
             'payment.page',
             $order->id
-        );
+        );        
+    }
 
-        
+    public function getShippingCharge()
+    {
+        return match (
+            $this->shipping_method
+        ) {
+
+            'Express' => 150,
+
+            'Same Day' => 300,
+
+            default => 50,
+        };
     }
 };
 ?>
@@ -441,6 +514,102 @@ new class extends Component
                     </p>
 
                 @enderror
+
+                <div class="bg-white p-6 rounded shadow mb-6">
+
+                    <h2 class="text-2xl font-bold mb-5">
+
+                        Shipping Address
+
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        <input
+                            type="text"
+                            wire:model="shipping_name"
+                            placeholder="Full Name"
+                            class="border p-3 rounded"
+                        >
+
+                        <input
+                            type="text"
+                            wire:model="shipping_phone"
+                            placeholder="Phone Number"
+                            class="border p-3 rounded"
+                        >
+
+                        <textarea
+                            wire:model="shipping_address"
+                            placeholder="Full Address"
+                            class="border p-3 rounded md:col-span-2"
+                        ></textarea>
+
+                        <input
+                            type="text"
+                            wire:model="shipping_city"
+                            placeholder="City"
+                            class="border p-3 rounded"
+                        >
+
+                        <input
+                            type="text"
+                            wire:model="shipping_state"
+                            placeholder="State"
+                            class="border p-3 rounded"
+                        >
+
+                        <input
+                            type="text"
+                            wire:model="shipping_country"
+                            placeholder="Country"
+                            class="border p-3 rounded"
+                        >
+
+                        <input
+                            type="text"
+                            wire:model="shipping_pincode"
+                            placeholder="Pincode"
+                            class="border p-3 rounded"
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="bg-white p-6 rounded shadow mb-6">
+
+                    <h2 class="text-2xl font-bold mb-5">
+
+                        Shipping Method
+
+                    </h2>
+
+                    <select
+                        wire:model.live="shipping_method"
+                        class="w-full border p-3 rounded">
+
+                        <option value="Standard">
+
+                            Standard Delivery (₹50)
+
+                        </option>
+
+                        <option value="Express">
+
+                            Express Delivery (₹150)
+
+                        </option>
+
+                        <option value="Same Day">
+
+                            Same Day Delivery (₹300)
+
+                        </option>
+
+                    </select>
+
+                </div>
 
                 <button
                     wire:click="placeOrder"
@@ -545,7 +714,21 @@ new class extends Component
                         </button>
 
                     </div>
+                    <div class="flex justify-between mb-2">
 
+                        <span>
+
+                            Shipping
+
+                        </span>
+
+                        <span>
+
+                            ₹{{ $this->getShippingCharge() }}
+
+                        </span>
+
+                    </div>
                     {{-- Success Message --}}
 
                     @if(session()->has('success'))
