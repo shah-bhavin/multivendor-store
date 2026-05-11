@@ -99,4 +99,11 @@ class User extends Authenticatable
             'sender_id'
         );
     }
+
+    public function isVendor()
+    {
+        return $this->hasRole(
+            'vendor'
+        );
+    }
 }

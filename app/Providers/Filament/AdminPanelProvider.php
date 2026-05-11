@@ -2,6 +2,12 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\AdminStatsOverview;
+use App\Filament\Widgets\RecentOrders;
+use App\Filament\Widgets\SalesChart;
+use App\Filament\Widgets\VendorLatestOrders;
+use App\Filament\Widgets\VendorRevenueChart;
+use App\Filament\Widgets\VendorStatsOverview;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -40,9 +46,13 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
-                \App\Filament\Widgets\AdminStatsOverview::class,
-                \App\Filament\Widgets\SalesChart::class,
-                \App\Filament\Widgets\RecentOrders::class,
+                AdminStatsOverview::class,
+                SalesChart::class,
+                RecentOrders::class,
+                            
+                VendorStatsOverview::class,                
+                VendorRevenueChart::class,                
+                VendorLatestOrders::class,
             ])
             ->middleware([
                 EncryptCookies::class,
