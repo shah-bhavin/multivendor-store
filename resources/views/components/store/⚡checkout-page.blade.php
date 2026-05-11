@@ -13,9 +13,6 @@ use Razorpay\Api\Api;
 new class extends Component
 {
     #[Layout('layouts.store')]
-    public $customer_name;
-
-    public $customer_email;
 
     public $customer_phone;
 
@@ -25,20 +22,48 @@ new class extends Component
 
     public $cart = [];
 
+    public $couponCode = '';
+
+    public $discount = 0;
+
     public function mount()
     {
+        if (! auth()->check()) {
+
+            return redirect('/login');
+        }
+
         $this->cart = session()
             ->get('cart', []);
+
+        if (auth()->check()) {
+
+            $this->customer_name =
+                auth()->user()->name;
+
+            $this->customer_email =
+                auth()->user()->email;
+        }
     }
+    public function getSubtotalProperty()
+    {
+        return collect($this->cart)
+            ->sum(function ($item) {
+
+                return $item['price']
+                    * $item['quantity'];
+            });
+    }
+
+    public function getFinalTotalProperty()
+    {
+        return $this->subtotal
+            - $this->discount;
+    }
+
     public function placeOrder()
     {
         $this->validate([
-
-            'customer_name' =>
-                'required',
-
-            'customer_email' =>
-                'required|email',
 
             'customer_phone' =>
                 'required',
@@ -47,20 +72,32 @@ new class extends Component
                 'required',
         ]);
 
-        $total = collect($this->cart)
-            ->sum(function ($item) {
+        auth()->user()->update([
 
-                return $item['price']
-                    * $item['quantity'];
-            });
+            'phone' =>
+                $this->customer_phone,
+
+            'address' =>
+                $this->customer_address,
+        ]);
+
+        // $total = collect($this->cart)
+        //     ->sum(function ($item) {
+
+        //     return $item['price']
+        //         * $item['quantity'];
+        // });
 
         $order = Order::create([
 
+            'user_id' =>
+                auth()->id(),
+
             'customer_name' =>
-                $this->customer_name,
+                auth()->user()->name,
 
             'customer_email' =>
-                $this->customer_email,
+                auth()->user()->email,
 
             'customer_phone' =>
                 $this->customer_phone,
@@ -69,13 +106,16 @@ new class extends Component
                 $this->customer_address,
 
             'total_amount' =>
-                $total,
+                $this->finalTotal,
 
             'status' =>
                 'pending',
 
             'payment_status' =>
                 'pending',
+
+            'user_id' =>
+                auth()->id(),
         ]);
 
 
@@ -123,7 +163,7 @@ new class extends Component
                 'order_' . $order->id,
 
             'amount' =>
-                $total * 100,
+                $this->finalTotal * 100,
 
             'currency' =>
                 'INR',
@@ -183,40 +223,68 @@ new class extends Component
 
             </h2>
 
+            {{-- Logged User Info --}}
+
+            <div class="mb-5">
+
+                <p class="mb-2">
+
+                    <strong>Name:</strong>
+
+                    {{ auth()->user()->name }}
+
+                </p>
+
+                <p>
+
+                    <strong>Email:</strong>
+
+                    {{ auth()->user()->email }}
+
+                </p>
+
+            </div>
+
             <div class="space-y-5">
 
                 <input
                     type="text"
-                    wire:model="customer_name"
-                    placeholder="Full Name"
-                    class="w-full border p-3 rounded"
-                >
-
-                <input
-                    type="email"
-                    wire:model="customer_email"
-                    placeholder="Email"
-                    class="w-full border p-3 rounded"
-                >
-
-                <input
-                    type="text"
                     wire:model="customer_phone"
-                    placeholder="Phone"
+                    placeholder="Phone Number"
                     class="w-full border p-3 rounded"
                 >
+
+                @error('customer_phone')
+
+                    <p class="text-red-500 text-sm">
+
+                        {{ $message }}
+
+                    </p>
+
+                @enderror
 
                 <textarea
                     wire:model="customer_address"
-                    placeholder="Address"
+                    placeholder="Delivery Address"
                     class="w-full border p-3 rounded"
                 ></textarea>
 
+                @error('customer_address')
+
+                    <p class="text-red-500 text-sm">
+
+                        {{ $message }}
+
+                    </p>
+
+                @enderror
+
                 <button
                     wire:click="placeOrder"
-                    class="bg-green-500 text-white px-6 py-3">
+                    class="bg-green-500 text-white px-6 py-3 rounded">
 
-                    Place Order
+                    Proceed To Payment
 
                 </button>
 
@@ -257,16 +325,44 @@ new class extends Component
 
             @endforeach
 
-            <div class="mt-5 text-2xl font-bold">
+            <div class="mt-5">
 
-                Total:
-                ₹{{
-                    collect($cart)->sum(
-                        fn($item) =>
-                            $item['price']
-                            * $item['quantity']
-                    )
-                }}
+                <div class="flex justify-between mb-2">
+
+                    <span>Subtotal</span>
+
+                    <span>
+
+                        ₹{{ $this->subtotal }}
+
+                    </span>
+
+                </div>
+
+                <div class="flex justify-between mb-2">
+
+                    <span>Discount</span>
+
+                    <span>
+
+                        ₹{{ $discount }}
+
+                    </span>
+
+                </div>
+
+                <div
+                    class="flex justify-between text-2xl font-bold">
+
+                    <span>Total</span>
+
+                    <span>
+
+                        ₹{{ $this->finalTotal }}
+
+                    </span>
+
+                </div>
 
             </div>
 

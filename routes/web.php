@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Livewire\Admin\Categories;
 use App\Livewire\Admin\Products;
 use App\Models\Order;
@@ -21,8 +22,14 @@ Route::livewire('/', 'store.home-page');
 Route::livewire('/products','store.product-list');
 Route::livewire('/products/{product}','store.product-details');
 Route::livewire('/cart', 'store.cart-page');
-Route::livewire('/checkout', 'store.checkout-page');
 
+Route::middleware('auth')->group(function () {
+    Route::livewire('/checkout', 'store.checkout-page');
+    Route::livewire('/my-orders', 'store.my-orders');
+});
+
+Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout');
 
 Route::get(
     '/payment-success/{order}',

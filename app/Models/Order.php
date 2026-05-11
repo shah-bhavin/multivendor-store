@@ -14,6 +14,7 @@ class Order extends Model
         'customer_address',
         'total_amount',
         'status',
+        'user_id',
 
         'payment_id',
         'payment_status',
@@ -26,4 +27,10 @@ class Order extends Model
         );
     }
 
+    public function user()
+    {
+        return $this->belongsTo(
+            User::class
+        );
+    }
 }

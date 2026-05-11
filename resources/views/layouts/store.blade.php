@@ -52,6 +52,44 @@
 
                     </a>
 
+                @auth
+
+                    <a href="/my-orders">
+
+                        My Orders
+
+                    </a>
+
+                    <form
+                        method="POST"
+                        action="{{ route('logout') }}"
+                        class="inline">
+
+                        @csrf
+
+                        <button type="submit">
+
+                            Logout
+
+                        </button>
+
+                    </form>
+
+                @else
+
+                    <a href="/login">
+
+                        Login
+
+                    </a>
+
+                    <a href="/register">
+
+                        Register
+
+                    </a>
+
+                @endauth
             </nav>
 
         </div>
