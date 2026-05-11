@@ -57,4 +57,11 @@ class Product extends Model implements HasMedia
             1
         );
     }
+
+    public function conversations()
+    {
+        return $this->hasMany(
+            Conversation::class
+        );
+    }
 }

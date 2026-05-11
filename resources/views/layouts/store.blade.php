@@ -96,6 +96,12 @@
                     Wishlist
 
                 </a>
+
+                <a href="/my-chats">
+
+                    Chats
+
+                </a>
             </nav>
 
         </div>

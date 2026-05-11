@@ -64,4 +64,34 @@ class User extends Authenticatable
             Review::class
         );
     }
+
+    public function customerConversations()
+    {
+        return $this->hasMany(
+
+            Conversation::class,
+
+            'customer_id'
+        );
+    }
+
+    public function vendorConversations()
+    {
+        return $this->hasMany(
+
+            Conversation::class,
+
+            'vendor_id'
+        );
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(
+
+            Message::class,
+
+            'sender_id'
+        );
+    }
 }

@@ -128,4 +128,7 @@ new class extends Component
     <livewire:store.product-reviews
         :product="$product"
     />
+    <livewire:store.chat-box
+        :product="$product"
+    />
 </div>
