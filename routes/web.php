@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/wishlist', 'store.wishlist-page');
     Route::livewire('/my-chats', 'store.my-chats');
 });
-
+Route::livewire('/shop/{slug}', 'store.vendor-store-page');
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 

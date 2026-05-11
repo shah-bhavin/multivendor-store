@@ -20,6 +20,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'store_name',
+        'store_description',
+        'store_slug',
+        'store_logo',
+        'store_banner',
     ];
 
     protected $hidden = [

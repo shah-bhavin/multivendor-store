@@ -103,7 +103,17 @@ new class extends Component
 
             Vendor:
             {{ $product->user?->name }}
+            <div class="mt-5">
 
+                <a
+                    href="/shop/{{ $product->user?->store_slug }}"
+                    class="text-blue-500 font-bold">
+
+                    Visit Vendor Store
+
+                </a>
+
+            </div>
         </p>
 
         @if(session()->has('success'))
