@@ -57,4 +57,11 @@ class User extends Authenticatable
             Wishlist::class
         );
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(
+            Review::class
+        );
+    }
 }

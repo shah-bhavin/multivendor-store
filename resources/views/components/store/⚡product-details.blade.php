@@ -125,5 +125,7 @@ new class extends Component
         </button>
 
     </div>
-
+    <livewire:store.product-reviews
+        :product="$product"
+    />
 </div>

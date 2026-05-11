@@ -39,4 +39,22 @@ class Product extends Model implements HasMedia
             Wishlist::class
         );
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(
+            Review::class
+        );
+    }
+
+    public function averageRating()
+    {
+        return round(
+
+            $this->reviews()
+                ->avg('rating'),
+
+            1
+        );
+    }
 }
