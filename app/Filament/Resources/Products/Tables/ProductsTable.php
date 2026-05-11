@@ -33,16 +33,48 @@ class ProductsTable
                 TextColumn::make('price')
                     ->money('INR')
                     ->sortable(),
+                
+                    
                 TextColumn::make('stock')
-                    ->numeric()
-                    ->sortable(),
+                    ->sortable()->color(function ($record) {
+
+                    if (
+
+                        $record->stock <= 0
+
+                    ) {
+
+                        return 'danger';
+                    }
+
+                    if (
+
+                        $record->stock <=
+                        $record->low_stock_alert
+
+                    ) {
+
+                        return 'warning';
+                    }
+
+                    return 'success';
+                }),
+
+                IconColumn::make('in_stock')
+                    ->boolean(),
+
+                TextColumn::make('low_stock_alert'),
+
                 SpatieMediaLibraryImageColumn::make('products')->collection('products')->limit(1),
+                
                 IconColumn::make('status')
                     ->boolean(),
+                
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()

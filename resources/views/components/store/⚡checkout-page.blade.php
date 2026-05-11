@@ -287,6 +287,18 @@ new class extends Component
                     $item['price'],
             ]);
 
+            $product = Product::find(
+                $item['product_id']
+            );
+
+            if ($product) {
+
+                $product->reduceStock(
+
+                    $item['quantity']
+                );
+            }
+
             // $product = \App\Models\Product::find(
             //     $item['id']
             // );

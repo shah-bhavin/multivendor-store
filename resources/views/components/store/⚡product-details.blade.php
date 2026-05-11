@@ -18,7 +18,36 @@ new class extends Component
 
     public function addToCart(){
         $product = Product::first(); 
+        
+        if ($this->product->isOutOfStock()) {
 
+            session()->flash(
+
+                'error',
+
+                'Product is out of stock.'
+            );
+
+            return;
+        }
+        if (
+
+            
+
+            1>$this->product->stock
+
+        ) {
+
+            session()->flash(
+
+                'error',
+
+                'Requested quantity unavailable.'
+            );
+
+            return;
+        }
+        
         $cart = session()->get('cart', []);
 
         $productId = $this->product->id;
@@ -123,16 +152,70 @@ new class extends Component
                 {{ session('success') }}
 
             </div>
+        @elseif(session()->has('error'))
+
+        <div class="bg-red-500 text-white p-3 mb-5">
+
+            {{ session('error') }}
+
+        </div>        
 
         @endif
+        
+        <div class="mt-4">
 
-        <button
-            wire:click="addToCart"
-            class="bg-blue-500 text-white px-6 py-3">
+            @if($product->isOutOfStock())
 
-            Add To Cart
+                <div
+                    class="bg-red-100 text-red-700 px-4 py-2 rounded">
 
-        </button>
+                    Out Of Stock
+
+                </div>
+
+            @elseif($product->isLowStock())
+
+                <div
+                    class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded">
+
+                    Only {{ $product->stock }} left in stock
+
+                </div>
+
+            @else
+
+                <div
+                    class="bg-green-100 text-green-700 px-4 py-2 rounded">
+
+                    In Stock
+
+                </div>
+
+            @endif
+
+        </div>
+
+        @if($product->isOutOfStock())
+
+            <button
+                disabled
+                class="bg-gray-400 text-white px-6 py-3 rounded">
+
+                Out Of Stock
+
+            </button>
+
+        @else
+
+            <button
+                wire:click="addToCart"
+                class="bg-blue-500 text-white px-6 py-3 rounded">
+
+                Add To Cart
+
+            </button>
+
+        @endif
 
     </div>
     <livewire:store.product-reviews

@@ -30,8 +30,18 @@ class ProductForm
                     ->required()
                     ->numeric()
                     ->default(0),
-                // FileUpload::make('image')
-                //     ->image(),
+
+                Toggle::make('track_inventory')
+                    ->default(true),
+
+
+                TextInput::make('low_stock_alert')
+                    ->numeric()
+                    ->default(5),
+
+                Toggle::make('in_stock')
+                    ->default(true),
+
                 SpatieMediaLibraryFileUpload::make('product_images')
                     ->collection('products')
                     ->disk('public')

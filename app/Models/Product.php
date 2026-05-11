@@ -19,6 +19,9 @@ class Product extends Model implements HasMedia
         'description',
         'price',
         'stock',
+        'low_stock_alert',
+        'track_inventory',
+        'in_stock',
         'image',
         'status',
     ];
@@ -63,5 +66,54 @@ class Product extends Model implements HasMedia
         return $this->hasMany(
             Conversation::class
         );
+    }
+
+    public function isOutOfStock()
+    {
+        if (!$this->track_inventory) {
+
+            return false;
+        }
+
+        return $this->stock <= 0;
+    }
+
+    public function isLowStock()
+    {
+        if (! $this->track_inventory) {
+
+            return false;
+        }
+
+        return $this->stock <=
+            $this->low_stock_alert;
+    }
+
+    public function reduceStock($quantity)
+    {
+        if (! $this->track_inventory) {
+
+            return;
+        }
+
+        $this->decrement(
+            'stock',
+
+            $quantity
+        );
+
+        /*
+    |--------------------------------------------------------------------------
+    | Update Stock Status
+    |--------------------------------------------------------------------------
+    */
+
+        if ($this->fresh()->stock <= 0) {
+
+            $this->update([
+
+                'in_stock' => false
+            ]);
+        }
     }
 }

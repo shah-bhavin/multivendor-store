@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Widgets\AdminStatsOverview;
+use App\Filament\Widgets\InventoryStats;
 use App\Filament\Widgets\RecentOrders;
 use App\Filament\Widgets\SalesChart;
 use App\Filament\Widgets\VendorLatestOrders;
@@ -53,6 +54,8 @@ class AdminPanelProvider extends PanelProvider
                 VendorStatsOverview::class,                
                 VendorRevenueChart::class,                
                 VendorLatestOrders::class,
+
+                InventoryStats::class,
             ])
             ->middleware([
                 EncryptCookies::class,

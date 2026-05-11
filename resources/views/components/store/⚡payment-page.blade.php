@@ -15,13 +15,6 @@ new class extends Component
     {
         $this->order = $order;
     }
-
-    // public function render()
-    // {
-    //     return view(
-    //         'livewire.store.payment-page'
-    //     )->layout('layouts.store');
-    // }
 };
 ?>
 
