@@ -6,6 +6,7 @@ use Livewire\WithPagination;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Wishlist;
 use Livewire\Attributes\Layout;    
 
 new class extends Component
@@ -152,10 +153,139 @@ new class extends Component
 
         
     }
+
+    public function addToWishlist($productId)
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | Login Required
+        |--------------------------------------------------------------------------
+        */
+
+        if (! auth()->check()) {
+
+            return redirect('/login');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Prevent Duplicate
+        |--------------------------------------------------------------------------
+        */
+
+        $exists = Wishlist::where(
+
+            'user_id',
+
+            auth()->id()
+
+        )->where(
+
+            'product_id',
+
+            $productId
+
+        )->exists();
+
+        if ($exists) {
+
+            session()->flash(
+
+                'error',
+
+                'Product already in wishlist.'
+            );
+
+            return;
+        }
+
+        Wishlist::create([
+
+            'user_id' =>
+                auth()->id(),
+
+            'product_id' =>
+                $productId,
+        ]);
+
+        session()->flash(
+
+            'success',
+
+            'Product added to wishlist.'
+        );
+    }
+
+    public function removeFromWishlist($productId)
+    {
+        Wishlist::where(
+
+            'user_id',
+
+            auth()->id()
+
+        )->where(
+
+            'product_id',
+
+            $productId
+
+        )->delete();
+
+        session()->flash(
+
+            'success',
+
+            'Product removed from wishlist.'
+        );
+    }
+
+    public function isWishlisted($productId)
+    {
+        if (! auth()->check()) {
+
+            return false;
+        }
+
+        return Wishlist::where(
+
+            'user_id',
+
+            auth()->id()
+
+        )->where(
+
+            'product_id',
+
+            $productId
+
+        )->exists();
+    }
 };
 ?>
 
 <div>
+    @if(session()->has('success'))
+
+        <div
+            class="bg-green-100 text-green-700 p-4 rounded mb-5">
+
+            {{ session('success') }}
+
+        </div>
+
+    @endif
+
+    @if(session()->has('error'))
+
+        <div
+            class="bg-red-100 text-red-700 p-4 rounded mb-5">
+
+            {{ session('error') }}
+
+        </div>
+
+    @endif
 
     <h1 class="text-4xl font-bold mb-10">
 
@@ -339,6 +469,31 @@ new class extends Component
                     ₹{{ $product->price }}
 
                 </p>
+                <div class="mb-3">
+
+                    @if($this->isWishlisted($product->id))
+
+                        <button
+                            wire:click="removeFromWishlist({{ $product->id }})"
+                            class="bg-red-500 text-white px-3 py-2 rounded w-full">
+
+                            Remove Wishlist
+
+                        </button>
+
+                    @else
+
+                        <button
+                            wire:click="addToWishlist({{ $product->id }})"
+                            class="bg-pink-500 text-white px-3 py-2 rounded w-full">
+
+                            Add To Wishlist
+
+                        </button>
+
+                    @endif
+
+                </div>
 
                 <a
                     href="/products/{{ $product->id }}"

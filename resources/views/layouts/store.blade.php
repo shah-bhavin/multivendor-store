@@ -90,6 +90,12 @@
                     </a>
 
                 @endauth
+
+                <a href="/wishlist">
+
+                    Wishlist
+
+                </a>
             </nav>
 
         </div>

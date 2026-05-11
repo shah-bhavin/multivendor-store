@@ -27,6 +27,7 @@ Route::livewire('/cart', 'store.cart-page');
 Route::middleware('auth')->group(function () {
     Route::livewire('/checkout', 'store.checkout-page');
     Route::livewire('/my-orders', 'store.my-orders');
+    Route::livewire('/wishlist', 'store.wishlist-page');
 });
 
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
