@@ -76,4 +76,5 @@ new class extends Component
             
     </div>
     <livewire:store.newsletter-subscribe />
+    <livewire:store.ai-chatbot />
 </div>
