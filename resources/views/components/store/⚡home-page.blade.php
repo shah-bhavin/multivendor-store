@@ -69,7 +69,7 @@ new class extends Component
             </div>
 
         @endforeach
-
+            
     </div>
-
+    <livewire:store.newsletter-subscribe />
 </div>
