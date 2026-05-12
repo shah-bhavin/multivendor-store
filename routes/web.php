@@ -32,7 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/my-chats', 'store.my-chats');
     Route::livewire('/orders/{orderId}/return-request', 'store.return-request-form')->name('return.request');
     Route::livewire('/vendor/ai-tools' , 'vendor.ai-product-generator')->name('vendor.ai.tools');
+    Route::livewire('/vendor/subscriptions',  'vendor.subscription-plans')->name('vendor.subscriptions');
 });
+
 Route::livewire('/shop/{slug}', 'store.vendor-store-page');
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');

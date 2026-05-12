@@ -106,4 +106,22 @@ class User extends Authenticatable
             'vendor'
         );
     }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(
+            VendorSubscription::class
+        );
+    }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(
+            VendorSubscription::class
+        )
+
+        ->where('status', 'active')
+
+        ->where('expires_at', '>', now());
+    }
 }
