@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Livewire\Admin\Categories;
-use App\Livewire\Admin\Products;
 use App\Models\Coupon;
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
+
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\OrdersExport;
 
 Route::view('/', 'welcome');
 
@@ -164,3 +165,23 @@ Route::livewire(
     '/payment/{order}',
     'store.payment-page'
 )->name('payment.page');
+
+Route::get(
+
+    '/export/orders',
+
+    function () {
+
+        return Excel::download(
+
+            new OrdersExport,
+
+            'orders.xlsx'
+        );
+    }
+
+)
+
+->middleware('auth')
+
+->name('orders.export');
