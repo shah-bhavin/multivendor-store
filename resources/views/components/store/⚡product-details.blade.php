@@ -204,7 +204,7 @@ new class extends Component
 
         <p class="text-2xl font-bold mb-5">
 
-            ₹{{ $product->price }}
+            {{ currency($product->price) }}
 
         </p>
 
@@ -297,7 +297,7 @@ new class extends Component
                 wire:click="addToCart"
                 class="bg-blue-500 text-white px-6 py-3 rounded">
 
-                Add To Cart
+                {{ __('messages.add_to_cart') }}
 
             </button>
 

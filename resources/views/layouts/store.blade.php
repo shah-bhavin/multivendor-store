@@ -36,6 +36,97 @@
             </a>
 
             <nav class="space-x-5">
+                <div class="flex gap-3">
+
+                    <a
+                        href="{{ route(
+
+                            'language.switch',
+
+                            'en'
+
+                        ) }}"
+
+                        class="text-sm">
+
+                        EN
+
+                    </a>
+
+                    <a
+                        href="{{ route(
+
+                            'language.switch',
+
+                            'gu'
+
+                        ) }}"
+
+                        class="text-sm">
+
+                        ગુજરાતી
+
+                    </a>
+
+                    <a
+                        href="{{ route(
+
+                            'language.switch',
+
+                            'hi'
+
+                        ) }}"
+
+                        class="text-sm">
+
+                        हिंदी
+
+                    </a>
+
+                </div>
+
+                <div class="flex gap-3">
+
+                    <a
+                        href="{{ route(
+
+                            'currency.switch',
+
+                            'INR'
+
+                        ) }}">
+
+                        ₹ INR
+
+                    </a>
+
+                    <a
+                        href="{{ route(
+
+                            'currency.switch',
+
+                            'USD'
+
+                        ) }}">
+
+                        $ USD
+
+                    </a>
+
+                    <a
+                        href="{{ route(
+
+                            'currency.switch',
+
+                            'EUR'
+
+                        ) }}">
+
+                        € EUR
+
+                    </a>
+
+                </div>
 
                 <a href="/"
                    class="hover:text-blue-500">

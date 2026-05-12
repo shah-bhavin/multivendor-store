@@ -22,7 +22,11 @@ new class extends Component
 
     <h1 class="text-4xl font-bold mb-10">
 
-        Latest Products
+        
+
+    {{ __('messages.latest_products') }}
+
+
 
     </h1>
 
