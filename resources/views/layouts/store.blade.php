@@ -1,3 +1,8 @@
+@php
+    // Change 'SEO' to 'SEOTools'
+    use Artesaos\SEOTools\Facades\SEOTools;
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +13,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Multi Vendor Store</title>
+    {!! SEO::generate() !!}
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])

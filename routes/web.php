@@ -21,7 +21,7 @@ require __DIR__.'/auth.php';
 
 Route::livewire('/', 'store.home-page');
 Route::livewire('/products','store.product-list');
-Route::livewire('/products/{product}','store.product-details');
+Route::livewire('/products/{slug}','store.product-details');
 Route::livewire('/cart', 'store.cart-page');
 
 Route::middleware('auth')->group(function () {

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Product extends Model implements HasMedia
 {
@@ -115,5 +116,16 @@ class Product extends Model implements HasMedia
                 'in_stock' => false
             ]);
         }
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($product) {
+
+            $product->slug = Str::slug(
+
+                $product->name
+            );
+        });
     }
 }

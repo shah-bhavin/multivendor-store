@@ -496,7 +496,7 @@ new class extends Component
                 </div>
 
                 <a
-                    href="/products/{{ $product->id }}"
+                    href="/products/{{ $product->slug }}"
                     class="bg-blue-500 text-white px-4 py-2 inline-block">
 
                     View Product

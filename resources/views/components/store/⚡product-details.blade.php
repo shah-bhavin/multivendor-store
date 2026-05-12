@@ -6,14 +6,84 @@ use App\Models\Product;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed; 
 
+use Artesaos\SEOTools\Facades\SEOMeta;
+use Artesaos\SEOTools\Facades\OpenGraph;
+use Artesaos\SEOTools\Facades\JsonLd;
+
+use Illuminate\Support\Facades\Cache;
 new class extends Component
 {
     #[Layout('layouts.store')]
-    public Product $product;
+    
 
-    public function mount(Product $product)
+    public Product $product;
+    
+    public function mount(Product $product, $slug)
     {
-        $this->product = $product;
+
+        $this->product = Product::where('slug', $slug)->firstOrFail();
+
+        SEOMeta::setTitle(
+            $this->product->name
+        );
+
+        SEOMeta::setDescription(
+            str($this->product->description)
+                ->limit(160)
+        );
+
+        SEOMeta::addKeyword([
+            $this->product->name,
+            'buy online',
+            'marketplace',
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Open Graph
+        |--------------------------------------------------------------------------
+        */
+
+        OpenGraph::setTitle(
+
+            $this->product->name
+        );
+
+        OpenGraph::setDescription(
+
+            str($this->product->description)
+                ->limit(160)
+        );
+
+        OpenGraph::setUrl(
+
+            url()->current()
+        );
+
+        OpenGraph::addImage(
+
+            $this->product
+                ->getFirstMediaUrl(
+                    'products'
+                )
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | JSON-LD
+        |--------------------------------------------------------------------------
+        */
+
+        JsonLd::setTitle(
+
+            $this->product->name
+        );
+
+        JsonLd::setDescription(
+
+            str($this->product->description)
+                ->limit(160)
+        );
     }
 
     public function addToCart(){
@@ -86,7 +156,23 @@ new class extends Component
 };
 ?>
 
+
 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+    {{-- <script type="application/ld+json">
+    {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "{{ $product->name }}",
+        "image": "{{ $product->getFirstMediaUrl('products') }}",
+        "description": "{{ strip_tags($product->description) }}",
+        "offers": {
+            "@type": "Offer",
+            "price": "{{ $product->price }}",
+            "priceCurrency": "INR",
+            "availability": "https://schema.org/InStock"
+        }
+    }
+    </script> --}}
 
     <div>
 
