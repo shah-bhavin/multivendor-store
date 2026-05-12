@@ -59,4 +59,11 @@ class Order extends Model
         return $this->delivery_status
             === 'Shipped';
     }
+
+    public function returnRequests()
+    {
+        return $this->hasMany(
+            ReturnRequest::class
+        );
+    }
 }

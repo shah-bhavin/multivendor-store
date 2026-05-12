@@ -131,6 +131,71 @@ new class extends Component
                                 $order->created_at
                                     ->format('d M Y')
                             }}
+                            <a
+                                href="{{ route(
+
+                                    'return.request',
+
+                                    $order->id
+
+                                ) }}"
+
+                                class="
+                                    bg-red-500
+                                    text-white
+                                    px-5
+                                    py-3
+                                    rounded
+                                    inline-block
+                                    mt-4
+                                ">
+
+                                Request Refund / Return
+
+                            </a>
+
+                            @if($order->returnRequests->count())
+
+                                <div
+                                    class="bg-yellow-100 p-5 rounded mt-6">
+
+                                    <h3
+                                        class="font-bold mb-3">
+
+                                        Return Requests
+
+                                    </h3>
+
+                                    @foreach(
+
+                                        $order->returnRequests
+                                        as $request
+
+                                    )
+
+                                        <div class="mb-3">
+
+                                            <strong>
+
+                                                {{ ucfirst($request->type) }}
+
+                                            </strong>
+
+                                            -
+
+                                            <span>
+
+                                                {{ $request->status }}
+
+                                            </span>
+
+                                        </div>
+
+                                    @endforeach
+
+                                </div>
+
+                            @endif
 
                         </td>
 

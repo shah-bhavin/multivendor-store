@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/my-orders', 'store.my-orders');
     Route::livewire('/wishlist', 'store.wishlist-page');
     Route::livewire('/my-chats', 'store.my-chats');
+    Route::livewire('/orders/{orderId}/return-request', 'store.return-request-form')->name('return.request');
+
 });
 Route::livewire('/shop/{slug}', 'store.vendor-store-page');
 Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
